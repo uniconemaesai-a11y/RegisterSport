@@ -1,0 +1,8 @@
+{
+  "name": "Youth Athlete Registration System",
+  "description": "A bright and friendly management system for youth sports competitions, supporting athlete registration, image uploads, and formal PDF printing.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

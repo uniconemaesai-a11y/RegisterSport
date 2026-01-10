@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { Athlete, Level } from './types';
 import { storageService } from './services/storageService';
 import RegistrationForm from './components/RegistrationForm';
@@ -238,7 +239,7 @@ const App: React.FC = () => {
                 <h3 className="text-xl font-bold text-blue-800 mb-4 flex items-center gap-2"><span className="text-2xl">💡</span> คำแนะนำ</h3>
                 <p className="text-sm text-gray-600 mb-2">เมื่อลงทะเบียนเสร็จแล้ว สามารถไปที่เมนู <b>"รายชื่อ / พิมพ์แผงรูป"</b> เพื่อตรวจสอบและสั่งพิมพ์แยกตามประเภทกีฬาได้ทันที</p>
                 <div className="bg-blue-50 p-3 rounded-xl border border-blue-100 text-xs text-blue-700">
-                  ระบบจะแยกหน้าพิมพ์ให้อัตโนมัติตาม: <b>กีฬา > รุ่นอายุ > เพศ</b>
+                  ระบบจะแยกหน้าพิมพ์ให้อัตโนมัติตาม: <b>กีฬา &gt; รุ่นอายุ &gt; เพศ</b>
                 </div>
               </div>
               <div className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-3xl text-white shadow-xl relative overflow-hidden">
@@ -275,7 +276,7 @@ const App: React.FC = () => {
                       className="mt-4 w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition-all group-hover:scale-[1.02]"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                      พิมพ์แผงรูป
+                      พิมพ์���ผงรูป
                     </button>
                   </div>
                 ))}
@@ -302,6 +303,7 @@ const App: React.FC = () => {
         <p className="font-bold">ระบบรายงานผลและแผงรูปนักกีฬา "แม่จันเกมส์"</p>
         <p className="text-xs mt-1">พัฒนาระบบโดย Krukai@CopyRight 2026</p>
       </footer>
+      <Analytics />
     </div>
   );
 };

@@ -73,7 +73,7 @@ const PrintView: React.FC<PrintViewProps> = ({ data, showSignature = true }) => 
           font-family: 'Angsana New', 'Sarabun', sans-serif;
         }
 
-        /* Thai official font sizes for A4 Printing */
+        /* Thai official font sizes for A4 Printing (Angsana New) */
         .text-24pt { font-size: 24pt !important; line-height: 1; }
         .text-22pt { font-size: 22pt !important; line-height: 1; }
         .text-20pt { font-size: 20pt !important; line-height: 1; }
@@ -83,7 +83,7 @@ const PrintView: React.FC<PrintViewProps> = ({ data, showSignature = true }) => 
         .text-14pt { font-size: 14pt !important; line-height: 1.1; }
         
         .thai-dotted-line {
-          border-bottom: 1px dotted black;
+          border-bottom: 1.2px dotted black;
           display: inline-block;
           flex: 1;
           margin-left: 2px;
@@ -128,7 +128,7 @@ const GroupedSection: React.FC<GroupedSectionProps> = ({ sportType, age, gender,
   const schoolName = "โรงเรียนเทศบาล 1 วัดพรหมวิหาร";
   const logoUrl = "https://img2.pic.in.th/pic/Gemini_Generated_Image_u2dku8u2dku8u2dk.png";
   
-  // 15 athletes per page (5 columns x 3 rows) as shown in the sample
+  // 15 athletes per page (5 columns x 3 rows) matches the sample document layout
   const pageSize = 15; 
   const pages = [];
   for (let i = 0; i < athletes.length; i += pageSize) {
@@ -144,7 +144,7 @@ const GroupedSection: React.FC<GroupedSectionProps> = ({ sportType, age, gender,
           style={{ 
             width: '210mm', 
             height: '297mm', 
-            padding: '12mm 15mm 10mm 15mm',
+            padding: '10mm 15mm 10mm 15mm',
             boxSizing: 'border-box',
             pageBreakAfter: 'always',
           }}
@@ -152,7 +152,7 @@ const GroupedSection: React.FC<GroupedSectionProps> = ({ sportType, age, gender,
           {/* Header Section */}
           <div className="text-center relative flex flex-col mb-4">
              {/* Logo at Top Right */}
-             <div className="absolute top-0 right-0">
+             <div className="absolute top-0 right-[-5mm]">
                 <div className="w-24 h-24 flex items-center justify-center">
                    <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
                 </div>
@@ -186,12 +186,12 @@ const GroupedSection: React.FC<GroupedSectionProps> = ({ sportType, age, gender,
           </div>
 
           {/* Athlete Grid (5 columns x 3 rows = 15 athletes) */}
-          <div className="grid grid-cols-5 gap-x-2 gap-y-6 flex-1 items-start content-start mt-4">
+          <div className="grid grid-cols-5 gap-x-2 gap-y-4 flex-1 items-start content-start mt-4">
             {pageAthletes.map((athlete) => (
               <AthleteBox key={athlete?.id || Math.random()} athlete={athlete} />
             ))}
             
-            {/* Fill empty slots */}
+            {/* Fill empty slots with empty boxes to maintain grid layout */}
             {pageAthletes.length < pageSize && Array.from({ length: pageSize - pageAthletes.length }).map((_, i) => (
                <AthleteBox key={`empty-${i}`} athlete={null} />
             ))}
@@ -205,7 +205,7 @@ const GroupedSection: React.FC<GroupedSectionProps> = ({ sportType, age, gender,
              </div>
              
              {showSignature && (
-               <div className="w-full flex justify-end pr-10 pb-12">
+               <div className="w-full flex justify-end pr-8 pb-10">
                   <div className="flex flex-col items-center text-center">
                     <div className="flex items-end mb-1">
                       <span className="text-18pt mr-2">ลงชื่อ</span>
@@ -247,8 +247,8 @@ const AthleteBox: React.FC<{ athlete: Athlete | null }> = ({ athlete }) => {
 
   return (
     <div className="flex flex-col items-center leading-none">
-      {/* Frame Size: Small as requested (approx 25mm x 32mm) */}
-      <div className="w-[26mm] h-[32mm] border border-black bg-white overflow-hidden flex items-center justify-center relative mb-1 text-center">
+      {/* Reduced frame size as requested: 24mm x 30mm for a tighter, professional look */}
+      <div className="w-[24mm] h-[30mm] border border-black bg-white overflow-hidden flex items-center justify-center relative mb-1.5 text-center">
         {athlete?.imageUrl ? (
           <img 
             src={athlete.imageUrl} 
@@ -274,8 +274,8 @@ const AthleteBox: React.FC<{ athlete: Athlete | null }> = ({ athlete }) => {
         )}
       </div>
 
-      {/* Athlete Data with Labels and Dotted Lines */}
-      <div className="w-full space-y-0.5 font-angsana px-0.5">
+      {/* Athlete Data with official-style labels and dotted lines */}
+      <div className="w-full space-y-0.5 font-angsana px-1">
         <div className="flex items-end overflow-hidden whitespace-nowrap text-14pt h-[1.3em]">
            <span className="shrink-0">ชื่อ</span> 
            <div className="thai-dotted-line truncate">

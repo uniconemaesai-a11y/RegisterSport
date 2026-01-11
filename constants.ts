@@ -12,8 +12,8 @@ export const SPORTS_CONFIG: Record<Level, SportOption[]> = {
   ],
   [Level.PRIMARY]: [
     { name: 'ฟุตบอล 7 คน', subCategories: ['ทั่วไป'], ages: ['10', '12'], genders: ['ชาย'] },
-    { name: 'แชร์บอล', subCategories: ['ทั่วไป'], ages: ['10'], genders: ['หญิง'] },
-    { name: 'แฮนด์บอล', subCategories: ['ทั่วไป'], ages: ['12'], genders: ['หญิง'] },
+    { name: 'แชร์บอล', subCategories: ['ทั่วไป'], ages: ['10'], genders: ['ชาย', 'หญิง'] },
+    { name: 'แฮนด์บอล', subCategories: ['ทั่วไป'], ages: ['12'], genders: ['ชาย', 'หญิง'] },
     { name: 'วอลเลย์บอล', subCategories: ['ทั่วไป'], ages: ['12'], genders: ['ชาย', 'หญิง'] },
     { name: 'ตะกร้อ', subCategories: ['ทั่วไป'], ages: ['12'], genders: ['ชาย', 'หญิง'] },
     { name: 'ฟุตซอล', subCategories: ['ทั่วไป'], ages: ['12'], genders: ['ชาย'] },

@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Athlete, Level } from './types';
-import { storageService } from './services/storageService';
-import RegistrationForm from './components/RegistrationForm';
-import AthleteTable from './components/AthleteTable';
-import PrintView from './components/PrintView';
-import PrintListView from './components/PrintListView';
-import EditModal from './components/EditModal';
+import { Athlete, Level } from './types.ts';
+import { storageService } from './services/storageService.ts';
+import RegistrationForm from './components/RegistrationForm.tsx';
+import AthleteTable from './components/AthleteTable.tsx';
+import PrintView from './components/PrintView.tsx';
+import PrintListView from './components/PrintListView.tsx';
+import EditModal from './components/EditModal.tsx';
 
 const App: React.FC = () => {
   const [athletes, setAthletes] = useState<Athlete[]>([]);

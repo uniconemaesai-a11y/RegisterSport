@@ -54,14 +54,17 @@
   "imports": {
     "react/": "https://esm.sh/react@^19.2.3/",
     "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react-dom/client": "https://esm.sh/react-dom@^19.2.3/client"
   }
 }
 </script>
+<!-- เพิ่ม Babel เพื่อประมวลผล TSX บนเบราว์เซอร์โดยตรงสำหรับ GitHub Pages -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
     <div id="root"></div>
-    <!-- เปลี่ยนกลับเป็น index.tsx เพื่อให้ระบบ Development Server ตรวจพบและทำการ Transpile อย่างถูกต้อง -->
-    <script type="module" src="index.tsx"></script>
+    <!-- เปลี่ยนเป็น type="text/babel" เพื่อให้ Babel ช่วยโหลดและ Transpile ไฟล์ .tsx โดยข้ามปัญหา MIME type -->
+    <script type="text/babel" data-presets="typescript,react" data-type="module" src="index.tsx"></script>
 </body>
 </html>

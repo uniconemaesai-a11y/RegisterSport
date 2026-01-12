@@ -34,7 +34,7 @@ const App: React.FC = () => {
   const loadData = async () => {
     setInitialLoading(true);
     const data = await storageService.getAllAthletes();
-    setAthletes(data);
+    setAthletes(data || []);
     setInitialLoading(false);
   };
 
@@ -112,73 +112,30 @@ const App: React.FC = () => {
     setPrintData(null);
   };
 
-  const handleNativePrint = () => {
-    window.print();
-  };
-
   if (isPrintPreview && printData) {
     return (
       <div className="bg-gray-100 min-h-screen">
         <div className="no-print sticky top-0 bg-white border-b-4 border-blue-600 p-4 flex flex-col md:flex-row justify-between items-center shadow-xl z-[200] gap-4">
           <div className="flex items-center gap-4">
-            <button 
-              onClick={closePrintPreview}
-              className="bg-gray-800 hover:bg-black text-white px-5 py-2.5 rounded-2xl font-bold transition-all flex items-center gap-2 shadow-lg"
-            >
-              ← กลับไปหน้าหลัก
-            </button>
+            <button onClick={closePrintPreview} className="bg-gray-800 hover:bg-black text-white px-5 py-2.5 rounded-2xl font-bold transition-all flex items-center gap-2 shadow-lg">← กลับไปหน้าหลัก</button>
             <div className="flex flex-col">
-              <span className="text-blue-700 font-black text-lg">
-                โหมดเตรียมพิมพ์{printMode === 'board' ? 'แผงรูป' : 'รายชื่อ'} (Print Mode)
-              </span>
-              <span className="text-gray-500 text-xs italic">ตรวจสอบความถูกต้องก่อนกดสั่งพิมพ์</span>
+              <span className="text-blue-700 font-black text-lg">โหมดเตรียมพิมพ์{printMode === 'board' ? 'แผงรูป' : 'รายชื่อ'}</span>
             </div>
           </div>
-          
           <div className="flex items-center gap-6">
             <label className="flex items-center gap-2 cursor-pointer group">
-              <div className="relative">
-                <input 
-                  type="checkbox" 
-                  checked={showSignature} 
-                  onChange={(e) => setShowSignature(e.target.checked)}
-                  className="sr-only peer" 
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </div>
+              <input type="checkbox" checked={showSignature} onChange={(e) => setShowSignature(e.target.checked)} className="sr-only peer" />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 relative"></div>
               <span className="text-sm font-bold text-gray-700">แสดงส่วนลงชื่อ</span>
             </label>
-
-            <button 
-              onClick={handleNativePrint}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-3 rounded-2xl font-black shadow-xl transform active:scale-95 transition-all flex items-center gap-2"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-              สั่งพิมพ์ (A4)
-            </button>
+            <button onClick={() => window.print()} className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-3 rounded-2xl font-black shadow-xl">สั่งพิมพ์ (A4)</button>
           </div>
         </div>
-
         <div className="flex justify-center p-0 md:p-8">
           <div className="bg-white shadow-2xl overflow-hidden printable-area ring-8 ring-black/5">
-            {printMode === 'board' ? (
-              <PrintView data={printData} showSignature={showSignature} />
-            ) : (
-              <PrintListView data={printData} showSignature={showSignature} />
-            )}
+            {printMode === 'board' ? <PrintView data={printData} showSignature={showSignature} /> : <PrintListView data={printData} showSignature={showSignature} />}
           </div>
         </div>
-        
-        <style>{`
-          @media screen { 
-            .printable-area { width: 210mm; min-height: 297mm; } 
-          }
-          @media print {
-            .no-print { display: none !important; }
-            body, html { background-color: white !important; margin: 0 !important; padding: 0 !important; }
-            .printable-area { box-shadow: none !important; ring: 0 !important; margin: 0 !important; }
-          }
-        `}</style>
       </div>
     );
   }
@@ -186,14 +143,10 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen pb-20">
       {toast && (
-        <div className={`fixed top-4 right-4 z-[200] px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 transition-all animate-bounce ${
-          toast.type === 'success' ? 'bg-green-500 text-white' : 
-          toast.type === 'error' ? 'bg-red-500 text-white' : 'bg-blue-600 text-white'
-        }`}>
+        <div className={`fixed top-4 right-4 z-[200] px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 transition-all animate-bounce ${toast.type === 'success' ? 'bg-green-500 text-white' : toast.type === 'error' ? 'bg-red-500 text-white' : 'bg-blue-600 text-white'}`}>
           <span className="font-bold">{toast.message}</span>
         </div>
       )}
-
       {confirmDialog && (
         <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-white p-8 rounded-3xl max-w-sm w-full shadow-2xl text-center border-4 border-red-100">
@@ -207,20 +160,11 @@ const App: React.FC = () => {
           </div>
         </div>
       )}
-
-      {editingAthlete && (
-        <EditModal 
-          athlete={editingAthlete} 
-          onClose={() => setEditingAthlete(null)} 
-          onSave={handleUpdateAthlete}
-          loading={loading}
-        />
-      )}
-
+      {editingAthlete && <EditModal athlete={editingAthlete} onClose={() => setEditingAthlete(null)} onSave={handleUpdateAthlete} loading={loading} />}
       <header className="no-print bg-gradient-to-r from-blue-700 via-blue-500 to-green-500 text-white shadow-xl">
         <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="bg-white p-2 rounded-full shadow-lg transform rotate-6 hover:rotate-0 transition-transform cursor-pointer w-16 h-16 flex items-center justify-center overflow-hidden">
+            <div className="bg-white p-2 rounded-full shadow-lg w-16 h-16 flex items-center justify-center overflow-hidden">
                <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
             </div>
             <div>
@@ -234,7 +178,6 @@ const App: React.FC = () => {
           </div>
         </div>
       </header>
-
       <main className="no-print max-w-6xl mx-auto px-4 mt-8">
         {initialLoading ? (
           <div className="flex flex-col items-center justify-center py-24 text-blue-600">
@@ -245,83 +188,33 @@ const App: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2"><RegistrationForm onSuccess={handleRegisterBulk} loading={loading} /></div>
             <div className="space-y-6">
-              <div className="bg-white p-6 rounded-3xl border-4 border-blue-100 shadow-md">
-                <h3 className="text-xl font-bold text-blue-800 mb-4 flex items-center gap-2"><span className="text-2xl">💡</span> คำแนะนำ</h3>
-                <p className="text-sm text-gray-600 mb-2">เมื่อลงทะเบียนเสร็จแล้ว สามารถไปที่เมนู <b>"รายชื่อ / พิมพ์แผงรูป"</b> เพื่อตรวจสอบและสั่งพิมพ์แยกตามประเภทกีฬาได้ทันที</p>
-                <div className="bg-blue-50 p-3 rounded-xl border border-blue-100 text-xs text-blue-700">
-                  ระบบจะแยกหน้าพิมพ์ให้อัตโนมัติตาม: <b>กีฬา > รุ่นอายุ > เพศ</b>
-                </div>
-              </div>
-              <div className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-3xl text-white shadow-xl relative overflow-hidden">
-                 <div className="relative z-10">
-                   <h3 className="text-lg font-bold opacity-80">สถิตินักกีฬา</h3>
-                   <div className="text-5xl font-black my-2">{athletes.length}</div>
-                   <p className="text-green-100 text-sm">คน ในฐานข้อมูล</p>
-                 </div>
+              <div className="bg-white p-6 rounded-3xl border-4 border-blue-100 shadow-md text-sm text-gray-600">
+                <h3 className="text-xl font-bold text-blue-800 mb-4 flex items-center gap-2"><span>💡</span> คำแนะนำ</h3>
+                เมื่อลงทะเบียนเสร็จแล้ว สามารถไปที่เมนู "รายชื่อ / พิมพ์แผงรูป" เพื่อพิมพ์แผงรูปนักกีฬาได้ทันที
               </div>
             </div>
           </div>
         ) : (
           <div className="space-y-8">
-            <div className="bg-white p-6 rounded-3xl shadow-lg border-4 border-green-200">
-              <h2 className="text-xl font-bold text-green-800 mb-4 flex items-center gap-2">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                เมนูจัดการพิมพ์แยกประเภท
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {printCategories.map(cat => (
-                  <div key={cat.key} className="bg-green-50 p-5 rounded-3xl border-2 border-green-100 hover:border-green-300 transition-all flex flex-col justify-between group shadow-sm hover:shadow-md">
-                    <div>
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
-                          {cat.gender}
-                        </span>
-                        <span className="text-green-600 font-black text-lg">{cat.count} คน</span>
-                      </div>
-                      <h3 className="font-bold text-gray-800 text-lg leading-tight truncate" title={cat.sport}>{cat.sport}</h3>
-                      <p className="text-sm text-gray-500 font-medium">รุ่น {cat.age} ปี</p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 mt-5">
-                      <button 
-                        onClick={() => openPrintPreview(cat.list, 'board')}
-                        className="bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-bold text-xs flex flex-col items-center justify-center gap-1 shadow-sm transition-all hover:scale-[1.05]"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        พิมพ์แผงรูป
-                      </button>
-                      <button 
-                        onClick={() => openPrintPreview(cat.list, 'list')}
-                        className="bg-blue-500 hover:bg-blue-600 text-white py-2.5 rounded-xl font-bold text-xs flex flex-col items-center justify-center gap-1 shadow-sm transition-all hover:scale-[1.05]"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        พิมพ์รายชื่อ
-                      </button>
-                    </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {printCategories.map(cat => (
+                <div key={cat.key} className="bg-white p-5 rounded-3xl border-2 border-green-100 shadow-sm flex flex-col justify-between">
+                  <div>
+                    <span className="text-green-600 font-black text-lg float-right">{cat.count} คน</span>
+                    <h3 className="font-bold text-gray-800 text-lg">{cat.sport}</h3>
+                    <p className="text-sm text-gray-500">รุ่น {cat.age} ปี ({cat.gender})</p>
                   </div>
-                ))}
-                {printCategories.length === 0 && (
-                  <div className="col-span-full py-12 text-center text-gray-400 font-bold border-4 border-dashed border-gray-100 rounded-3xl">
-                    ยังไม่มีข้อมูลนักกีฬาในระบบ
+                  <div className="grid grid-cols-2 gap-2 mt-5">
+                    <button onClick={() => openPrintPreview(cat.list, 'board')} className="bg-green-500 hover:bg-green-600 text-white py-2 rounded-xl font-bold text-xs">พิมพ์แผงรูป</button>
+                    <button onClick={() => openPrintPreview(cat.list, 'list')} className="bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-xl font-bold text-xs">พิมพ์รายชื่อ</button>
                   </div>
-                )}
-              </div>
+                </div>
+              ))}
             </div>
-
-            <AthleteTable 
-              athletes={athletes} 
-              onDelete={handleDelete} 
-              onEdit={setEditingAthlete}
-              onPrint={(a) => openPrintPreview(a, 'board')}
-              onPrintAll={(filtered) => openPrintPreview(filtered, 'board')}
-            />
+            <AthleteTable athletes={athletes} onDelete={handleDelete} onEdit={setEditingAthlete} onPrint={(a) => openPrintPreview(a, 'board')} onPrintAll={(filtered) => openPrintPreview(filtered, 'board')} />
           </div>
         )}
       </main>
-
-      <footer className="no-print mt-20 p-8 text-center text-gray-400 border-t border-gray-100">
-        <p className="font-bold text-gray-500">ระบบรายงานผลและแผงรูปนักกีฬา "แม่จันเกมส์"</p>
-        <p className="text-xs mt-1">พัฒนาระบบโดย Krukai@CopyRight 2026</p>
-      </footer>
     </div>
   );
 };

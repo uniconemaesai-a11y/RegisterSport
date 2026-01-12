@@ -5,6 +5,7 @@ import { storageService } from './services/storageService';
 import RegistrationForm from './components/RegistrationForm';
 import AthleteTable from './components/AthleteTable';
 import PrintView from './components/PrintView';
+import PrintListView from './components/PrintListView';
 import EditModal from './components/EditModal';
 
 const App: React.FC = () => {
@@ -12,9 +13,13 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'register' | 'list'>('register');
+  
+  // Printing States
   const [isPrintPreview, setIsPrintPreview] = useState(false);
+  const [printMode, setPrintMode] = useState<'board' | 'list'>('board');
   const [printData, setPrintData] = useState<Athlete[] | null>(null);
   const [showSignature, setShowSignature] = useState(true);
+  
   const logoUrl = "https://img2.pic.in.th/pic/Gemini_Generated_Image_u2dku8u2dku8u2dk.png";
   
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
@@ -94,11 +99,11 @@ const App: React.FC = () => {
     });
   };
 
-  const openPrintView = (data: Athlete[] | Athlete) => {
+  const openPrintPreview = (data: Athlete[] | Athlete, mode: 'board' | 'list') => {
     const dataArray = Array.isArray(data) ? data : [data];
     setPrintData(dataArray);
+    setPrintMode(mode);
     setIsPrintPreview(true);
-    // Scroll to top
     window.scrollTo(0, 0);
   };
 
@@ -123,8 +128,10 @@ const App: React.FC = () => {
               ← กลับไปหน้าหลัก
             </button>
             <div className="flex flex-col">
-              <span className="text-blue-700 font-black text-lg">โหมดเตรียมพิมพ์ (Print Mode)</span>
-              <span className="text-gray-500 text-xs italic">ตรวจสอบข้อมูลและรูปถ่ายให้เรียบร้อยก่อนกดสั่งพิมพ์</span>
+              <span className="text-blue-700 font-black text-lg">
+                โหมดเตรียมพิมพ์{printMode === 'board' ? 'แผงรูป' : 'รายชื่อ'} (Print Mode)
+              </span>
+              <span className="text-gray-500 text-xs italic">ตรวจสอบความถูกต้องก่อนกดสั่งพิมพ์</span>
             </div>
           </div>
           
@@ -147,14 +154,18 @@ const App: React.FC = () => {
               className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-3 rounded-2xl font-black shadow-xl transform active:scale-95 transition-all flex items-center gap-2"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-              สั่งพิมพ์แผงรูป (A4)
+              สั่งพิมพ์ (A4)
             </button>
           </div>
         </div>
 
         <div className="flex justify-center p-0 md:p-8">
           <div className="bg-white shadow-2xl overflow-hidden printable-area ring-8 ring-black/5">
-            <PrintView data={printData} showSignature={showSignature} />
+            {printMode === 'board' ? (
+              <PrintView data={printData} showSignature={showSignature} />
+            ) : (
+              <PrintListView data={printData} showSignature={showSignature} />
+            )}
           </div>
         </div>
         
@@ -219,7 +230,7 @@ const App: React.FC = () => {
           </div>
           <div className="flex bg-white/10 p-1 rounded-2xl">
             <button onClick={() => setActiveTab('register')} className={`px-8 py-2.5 rounded-xl font-bold transition-all ${activeTab === 'register' ? 'bg-white text-blue-700 shadow-lg scale-105' : 'hover:bg-white/10'}`}>ลงทะเบียนกลุ่ม</button>
-            <button onClick={() => setActiveTab('list')} className={`px-8 py-2.5 rounded-xl font-bold transition-all ${activeTab === 'list' ? 'bg-white text-blue-700 shadow-lg scale-105' : 'hover:bg-white/10'}`}>รายชื่อ / เมนูพิมพ์แผงรูป</button>
+            <button onClick={() => setActiveTab('list')} className={`px-8 py-2.5 rounded-xl font-bold transition-all ${activeTab === 'list' ? 'bg-white text-blue-700 shadow-lg scale-105' : 'hover:bg-white/10'}`}>รายชื่อ / พิมพ์แผงรูป</button>
           </div>
         </div>
       </header>
@@ -255,11 +266,11 @@ const App: React.FC = () => {
             <div className="bg-white p-6 rounded-3xl shadow-lg border-4 border-green-200">
               <h2 className="text-xl font-bold text-green-800 mb-4 flex items-center gap-2">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                เมนูพิมพ์แผงรูป (แยกตามประเภท)
+                เมนูจัดการพิมพ์แยกประเภท
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {printCategories.map(cat => (
-                  <div key={cat.key} className="bg-green-50 p-4 rounded-2xl border-2 border-green-100 hover:border-green-300 transition-all flex flex-col justify-between group">
+                  <div key={cat.key} className="bg-green-50 p-5 rounded-3xl border-2 border-green-100 hover:border-green-300 transition-all flex flex-col justify-between group shadow-sm hover:shadow-md">
                     <div>
                       <div className="flex justify-between items-start mb-2">
                         <span className="bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
@@ -267,21 +278,30 @@ const App: React.FC = () => {
                         </span>
                         <span className="text-green-600 font-black text-lg">{cat.count} คน</span>
                       </div>
-                      <h3 className="font-bold text-gray-800 text-md truncate" title={cat.sport}>{cat.sport}</h3>
-                      <p className="text-xs text-gray-500 font-medium">รุ่น {cat.age} ปี</p>
+                      <h3 className="font-bold text-gray-800 text-lg leading-tight truncate" title={cat.sport}>{cat.sport}</h3>
+                      <p className="text-sm text-gray-500 font-medium">รุ่น {cat.age} ปี</p>
                     </div>
-                    <button 
-                      onClick={() => openPrintView(cat.list)}
-                      className="mt-4 w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition-all group-hover:scale-[1.02]"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                      พิมพ์แผงรูป
-                    </button>
+                    <div className="grid grid-cols-2 gap-2 mt-5">
+                      <button 
+                        onClick={() => openPrintPreview(cat.list, 'board')}
+                        className="bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-bold text-xs flex flex-col items-center justify-center gap-1 shadow-sm transition-all hover:scale-[1.05]"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        พิมพ์แผงรูป
+                      </button>
+                      <button 
+                        onClick={() => openPrintPreview(cat.list, 'list')}
+                        className="bg-blue-500 hover:bg-blue-600 text-white py-2.5 rounded-xl font-bold text-xs flex flex-col items-center justify-center gap-1 shadow-sm transition-all hover:scale-[1.05]"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        พิมพ์รายชื่อ
+                      </button>
+                    </div>
                   </div>
                 ))}
                 {printCategories.length === 0 && (
-                  <div className="col-span-full py-8 text-center text-gray-400 font-bold border-2 border-dashed border-gray-200 rounded-2xl">
-                    ยังไม่มีข้อมูลนักกีฬาที่จะสร้างเมนูพิมพ์ได้
+                  <div className="col-span-full py-12 text-center text-gray-400 font-bold border-4 border-dashed border-gray-100 rounded-3xl">
+                    ยังไม่มีข้อมูลนักกีฬาในระบบ
                   </div>
                 )}
               </div>
@@ -291,15 +311,15 @@ const App: React.FC = () => {
               athletes={athletes} 
               onDelete={handleDelete} 
               onEdit={setEditingAthlete}
-              onPrint={openPrintView}
-              onPrintAll={openPrintView}
+              onPrint={(a) => openPrintPreview(a, 'board')}
+              onPrintAll={(filtered) => openPrintPreview(filtered, 'board')}
             />
           </div>
         )}
       </main>
 
       <footer className="no-print mt-20 p-8 text-center text-gray-400 border-t border-gray-100">
-        <p className="font-bold">ระบบรายงานผลและแผงรูปนักกีฬา "แม่จันเกมส์"</p>
+        <p className="font-bold text-gray-500">ระบบรายงานผลและแผงรูปนักกีฬา "แม่จันเกมส์"</p>
         <p className="text-xs mt-1">พัฒนาระบบโดย Krukai@CopyRight 2026</p>
       </footer>
     </div>

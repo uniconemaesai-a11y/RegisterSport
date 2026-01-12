@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Athlete, Level } from '../types';
+import * as XLSX from 'https://esm.sh/xlsx@0.18.5';
 
 interface AthleteTableProps {
   athletes: Athlete[];
@@ -50,8 +51,8 @@ const AthleteTable: React.FC<AthleteTableProps> = ({ athletes, onDelete, onEdit,
   };
 
   const filteredAthletes = athletes.filter(a => {
-    const matchesSearch = a.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          a.school.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = (a.name || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          (a.school || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesLevel = levelFilter === 'All' || a.level === levelFilter;
     const matchesSport = sportFilter === 'All' || a.sportType === sportFilter;
     return matchesSearch && matchesLevel && matchesSport;
@@ -71,6 +72,29 @@ const AthleteTable: React.FC<AthleteTableProps> = ({ athletes, onDelete, onEdit,
     return 0;
   });
 
+  const exportToExcel = () => {
+    const dataToExport = sortedAthletes.map((a, index) => ({
+      'ลำดับ': index + 1,
+      'ระดับ': a.level,
+      'ประเภทกีฬา': a.sportType,
+      'รุ่นอายุ': a.age + ' ปี',
+      'เพศ': a.gender,
+      'ชื่อ-นามสกุล': a.name,
+      'วันเดือนปีเกิด': a.birthDate,
+      'โรงเรียน': a.school,
+      'ครูผู้ควบคุม': a.coach,
+      'หมายเหตุ': a.note
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(dataToExport);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "รายชื่อนักกีฬา");
+    
+    // Generate filename with current date
+    const date = new Date().toISOString().split('T')[0];
+    XLSX.writeFile(wb, `รายชื่อนักกีฬา_แม่จันเกมส์_${date}.xlsx`);
+  };
+
   const uniqueSports = Array.from(new Set(athletes.map(a => a.sportType)));
 
   return (
@@ -82,15 +106,24 @@ const AthleteTable: React.FC<AthleteTableProps> = ({ athletes, onDelete, onEdit,
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
               ข้อมูลนักกีฬาในระบบ
             </h2>
-            <p className="text-blue-200 text-sm">กรองตามประเภทเพื่อพิมพ์ "แผงรูปนักกีฬา"</p>
+            <p className="text-blue-200 text-sm">จัดการข้อมูล กรอง และส่งออกเป็นไฟล์สำหรับใช้งานทั่วไป</p>
           </div>
-          <button 
-            onClick={() => onPrintAll(sortedAthletes)}
-            className="bg-yellow-400 hover:bg-yellow-500 text-blue-900 px-6 py-2.5 rounded-2xl font-bold flex items-center gap-2 transition-all shadow-lg active:scale-95"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-            พิมพ์แผงรูป ( {sortedAthletes.length} คน )
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button 
+              onClick={exportToExcel}
+              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2.5 rounded-2xl font-bold flex items-center gap-2 transition-all shadow-lg active:scale-95 border-b-4 border-green-700"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              ส่งออก Excel
+            </button>
+            <button 
+              onClick={() => onPrintAll(sortedAthletes)}
+              className="bg-yellow-400 hover:bg-yellow-500 text-blue-900 px-6 py-2.5 rounded-2xl font-bold flex items-center gap-2 transition-all shadow-lg active:scale-95 border-b-4 border-yellow-600"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+              พิมพ์แผงรูป ( {sortedAthletes.length} คน )
+            </button>
+          </div>
         </div>
       </div>
 
@@ -194,7 +227,7 @@ const AthleteTable: React.FC<AthleteTableProps> = ({ athletes, onDelete, onEdit,
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                     </button>
                     <button
-                      onClick={() => handleDelete(athlete.id)}
+                      onClick={() => onDelete(athlete.id)}
                       className="p-2 bg-red-50 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition-all"
                       title="ลบข้อมูล"
                     >
@@ -218,11 +251,6 @@ const AthleteTable: React.FC<AthleteTableProps> = ({ athletes, onDelete, onEdit,
       </div>
     </div>
   );
-
-  // Helper for the delete confirmation logic if needed locally, though it's passed from parent
-  function handleDelete(id: string) {
-    onDelete(id);
-  }
 };
 
 export default AthleteTable;

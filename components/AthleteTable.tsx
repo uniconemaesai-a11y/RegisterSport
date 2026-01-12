@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Athlete, Level } from '../types';
+import { Athlete, Level } from '../types.ts';
 import * as XLSX from 'https://esm.sh/xlsx@0.18.5';
 
 interface AthleteTableProps {

@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Athlete } from '../types';
+import { Athlete } from '../types.ts';
 
 interface PrintViewProps {
   data: Athlete[] | Athlete | null;
@@ -12,7 +11,6 @@ const PrintView: React.FC<PrintViewProps> = ({ data, showSignature = true }) => 
 
   const athletes = Array.isArray(data) ? data : [data];
   
-  // Group athletes by sport type, age, and gender
   const groupedAthletes = athletes.reduce((acc, athlete) => {
     const sport = athlete.sportType || "ทั่วไป";
     const age = athlete.age || "ไม่ระบุ";
@@ -73,7 +71,6 @@ const PrintView: React.FC<PrintViewProps> = ({ data, showSignature = true }) => 
           font-family: 'Angsana New', 'Sarabun', sans-serif;
         }
 
-        /* Thai official font sizes for A4 Printing (Angsana New) */
         .text-24pt { font-size: 24pt !important; line-height: 1; }
         .text-22pt { font-size: 22pt !important; line-height: 1; }
         .text-20pt { font-size: 20pt !important; line-height: 1; }
@@ -128,7 +125,6 @@ const GroupedSection: React.FC<GroupedSectionProps> = ({ sportType, age, gender,
   const schoolName = "โรงเรียนเทศบาล 1 วัดพรหมวิหาร";
   const logoUrl = "https://img2.pic.in.th/pic/Gemini_Generated_Image_u2dku8u2dku8u2dk.png";
   
-  // 15 athletes per page (5 columns x 3 rows) matches the sample document layout
   const pageSize = 15; 
   const pages = [];
   for (let i = 0; i < athletes.length; i += pageSize) {
@@ -149,9 +145,7 @@ const GroupedSection: React.FC<GroupedSectionProps> = ({ sportType, age, gender,
             pageBreakAfter: 'always',
           }}
         >
-          {/* Header Section */}
           <div className="text-center relative flex flex-col mb-4">
-             {/* Logo at Top Right */}
              <div className="absolute top-0 right-[-5mm]">
                 <div className="w-24 h-24 flex items-center justify-center">
                    <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
@@ -185,19 +179,16 @@ const GroupedSection: React.FC<GroupedSectionProps> = ({ sportType, age, gender,
              </div>
           </div>
 
-          {/* Athlete Grid (5 columns x 3 rows = 15 athletes) */}
           <div className="grid grid-cols-5 gap-x-2 gap-y-4 flex-1 items-start content-start mt-4">
             {pageAthletes.map((athlete) => (
               <AthleteBox key={athlete?.id || Math.random()} athlete={athlete} />
             ))}
             
-            {/* Fill empty slots with empty boxes to maintain grid layout */}
             {pageAthletes.length < pageSize && Array.from({ length: pageSize - pageAthletes.length }).map((_, i) => (
                <AthleteBox key={`empty-${i}`} athlete={null} />
             ))}
           </div>
 
-          {/* Certification and Signature Footer */}
           <div className="mt-auto pt-4 font-angsana relative">
              <div className="text-center text-18pt mb-6 leading-tight">
                 <p>ขอรับรองว่าตามรายชื่อและรูปถ่ายข้างบน เป็นนักเรียนโรงเรียนเทศบาล 1 วัดพรหมวิหาร จริง</p>
@@ -238,7 +229,7 @@ const AthleteBox: React.FC<{ athlete: Athlete | null }> = ({ athlete }) => {
       let date = new Date(dateStr);
       if (isNaN(date.getTime())) return dateStr;
       let year = date.getFullYear();
-      if (year < 2400) year += 543; // Buddhist Era
+      if (year < 2400) year += 543;
       return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${year}`;
     } catch (e) {
       return dateStr;
@@ -247,7 +238,6 @@ const AthleteBox: React.FC<{ athlete: Athlete | null }> = ({ athlete }) => {
 
   return (
     <div className="flex flex-col items-center leading-none">
-      {/* Reduced frame size as requested: 24mm x 30mm for a tighter, professional look */}
       <div className="w-[24mm] h-[30mm] border border-black bg-white overflow-hidden flex items-center justify-center relative mb-1.5 text-center">
         {athlete?.imageUrl ? (
           <img 
@@ -274,7 +264,6 @@ const AthleteBox: React.FC<{ athlete: Athlete | null }> = ({ athlete }) => {
         )}
       </div>
 
-      {/* Athlete Data with official-style labels and dotted lines */}
       <div className="w-full space-y-0.5 font-angsana px-1">
         <div className="flex items-end overflow-hidden whitespace-nowrap text-14pt h-[1.3em]">
            <span className="shrink-0">ชื่อ</span> 

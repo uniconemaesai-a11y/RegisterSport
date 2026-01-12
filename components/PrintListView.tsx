@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Athlete } from '../types';
+import { Athlete } from '../types.ts';
 
 interface PrintListViewProps {
   data: Athlete[];
@@ -15,7 +14,6 @@ const PrintListView: React.FC<PrintListViewProps> = ({ data, showSignature = tru
   const schoolName = "โรงเรียนเทศบาล 1 วัดพรหมวิหาร";
   const logoUrl = "https://img2.pic.in.th/pic/Gemini_Generated_Image_u2dku8u2dku8u2dk.png";
 
-  // Group into pages of 25 for better layout
   const pageSize = 25;
   const pages = [];
   for (let i = 0; i < athletes.length; i += pageSize) {
@@ -36,7 +34,6 @@ const PrintListView: React.FC<PrintListViewProps> = ({ data, showSignature = tru
             pageBreakAfter: 'always',
           }}
         >
-          {/* Header Section */}
           <div className="text-center relative flex flex-col mb-6">
              <div className="absolute top-0 right-0">
                 <div className="w-20 h-20 flex items-center justify-center">
@@ -59,7 +56,6 @@ const PrintListView: React.FC<PrintListViewProps> = ({ data, showSignature = tru
              </div>
           </div>
 
-          {/* Table Content - Applied text-16pt for the whole table */}
           <div className="flex-1 mt-4">
             <table className="w-full border-collapse border border-black text-16pt">
               <thead>
@@ -83,7 +79,6 @@ const PrintListView: React.FC<PrintListViewProps> = ({ data, showSignature = tru
                     </tr>
                   );
                 })}
-                {/* Fill empty rows to keep table height consistent if needed */}
                 {pageAthletes.length < pageSize && Array.from({ length: pageSize - pageAthletes.length }).map((_, i) => (
                    <tr key={`empty-${i}`} className="h-[2.5em]">
                      <td className="border border-black p-2">&nbsp;</td>
@@ -96,7 +91,6 @@ const PrintListView: React.FC<PrintListViewProps> = ({ data, showSignature = tru
             </table>
           </div>
 
-          {/* Footer Section */}
           <div className="mt-8 font-angsana">
              <div className="text-center text-18pt mb-8">
                 <p>ขอรับรองว่ารายชื่อข้างต้นเป็นนักเรียนในสังกัดโรงเรียน {schoolName} จริง</p>

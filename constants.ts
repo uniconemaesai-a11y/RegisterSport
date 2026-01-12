@@ -1,5 +1,4 @@
-
-import { Level, SportOption } from './types';
+import { Level, SportOption } from './types.ts';
 
 export const SPORTS_CONFIG: Record<Level, SportOption[]> = {
   [Level.EARLY]: [

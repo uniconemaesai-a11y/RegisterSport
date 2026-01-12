@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
-import { Level, Athlete } from '../types';
-import { SPORTS_CONFIG } from '../constants';
+import { Level, Athlete } from '../types.ts';
+import { SPORTS_CONFIG } from '../constants.ts';
 
 interface RegistrationFormProps {
   onSuccess: (athletes: any[]) => void;

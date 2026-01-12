@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
-import { Athlete, Level } from '../types';
-import { SPORTS_CONFIG } from '../constants';
+import { Athlete, Level } from '../types.ts';
+import { SPORTS_CONFIG } from '../constants.ts';
 
 interface EditModalProps {
   athlete: Athlete;

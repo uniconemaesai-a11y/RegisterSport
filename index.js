@@ -1,15 +1,1 @@
-
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App.js';
-
-const rootElement = document.getElementById('root');
-if (!rootElement) {
-  throw new Error("Could not find root element to mount to");
-}
-
-createRoot(rootElement).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+// Entry point is index.tsx. This file is kept empty to avoid conflicts.

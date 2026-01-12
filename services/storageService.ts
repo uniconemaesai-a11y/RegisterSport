@@ -1,21 +1,12 @@
-
-import { Athlete } from '../types';
+import { Athlete } from '../types.ts';
 
 declare const google: any;
 
-// The published Web App URL from your Google Apps Script project
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby8X548o8oa4rxHJNBa4yuVDakvlg4gMT0JQ_IhG8v5ByX0ZWfgcQk3gtfZBPpWAHn7aQ/exec";
 
-/**
- * Enhanced fetcher that avoids CORS preflight by using text/plain.
- * Google Apps Script doPost can still parse this string as JSON.
- */
 async function fetchFromAppsScript(action: string, extraParams: any = {}): Promise<any> {
   try {
     const payload = JSON.stringify({ action, ...extraParams });
-    
-    // We use method POST with text/plain to make it a "Simple Request" 
-    // and avoid the OPTIONS preflight which GAS doesn't support.
     const response = await fetch(`${SCRIPT_URL}`, {
       method: "POST",
       mode: "cors", 
@@ -33,7 +24,6 @@ async function fetchFromAppsScript(action: string, extraParams: any = {}): Promi
     return result;
   } catch (err) {
     console.error(`Fetch to GAS failed for action ${action}:`, err);
-    // If it's a real CORS error, we might not even get a response object
     return null;
   }
 }
@@ -41,7 +31,6 @@ async function fetchFromAppsScript(action: string, extraParams: any = {}): Promi
 export const storageService = {
   saveBulkAthletes: async (athletes: any[]): Promise<{ success: boolean; count?: number; error?: string }> => {
     return new Promise(async (resolve) => {
-      // 1. Try native google.script.run (if hosted inside GAS iframe)
       if (typeof google !== 'undefined' && google.script && google.script.run) {
         google.script.run
           .withSuccessHandler((res: any) => resolve(res))
@@ -50,7 +39,6 @@ export const storageService = {
         return;
       }
 
-      // 2. Fallback to external Fetch call (AI Studio / Local)
       const res = await fetchFromAppsScript('save', { data: athletes });
       if (res) {
         resolve(res);

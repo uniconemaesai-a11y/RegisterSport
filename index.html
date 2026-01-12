@@ -61,7 +61,7 @@
 </head>
 <body>
     <div id="root"></div>
-    <!-- เปลี่ยนจาก index.tsx เป็น index.js เพื่อแก้ไขปัญหา MIME type application/octet-stream -->
-    <script type="module" src="index.js"></script>
+    <!-- เปลี่ยนกลับเป็น index.tsx เพื่อให้ระบบ Development Server ตรวจพบและทำการ Transpile อย่างถูกต้อง -->
+    <script type="module" src="index.tsx"></script>
 </body>
 </html>

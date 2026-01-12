@@ -14,57 +14,34 @@
             margin: 0;
             padding: 0;
         }
-
-        /* Standard Thai official font setup */
         @font-face {
             font-family: 'Angsana New';
             src: local('Angsana New'), local('AngsanaNew');
         }
-
         @media print {
-            .no-print {
-                display: none !important;
-            }
-            .print-only {
-                display: block !important;
-            }
-            body {
-                background-color: white !important;
-                font-family: 'Angsana New', 'Sarabun', serif !important;
-            }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background-color: white !important; font-family: 'Angsana New', 'Sarabun', serif !important; }
         }
-        .print-only {
-            display: none;
-        }
-        /* Custom Scrollbar for better UX */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #3b82f6;
-            border-radius: 10px;
-        }
+        .print-only { display: none; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
     </style>
 <script type="importmap">
 {
   "imports": {
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react-dom/client": "https://esm.sh/react-dom@^19.2.3/client"
+    "react": "https://esm.sh/react@19.0.0",
+    "react-dom/": "https://esm.sh/react-dom@19.0.0/",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client"
   }
 }
 </script>
-<!-- เพิ่ม Babel เพื่อประมวลผล TSX บนเบราว์เซอร์โดยตรงสำหรับ GitHub Pages -->
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
     <div id="root"></div>
-    <!-- เปลี่ยนเป็น type="text/babel" เพื่อให้ Babel ช่วยโหลดและ Transpile ไฟล์ .tsx โดยข้ามปัญหา MIME type -->
-    <script type="text/babel" data-presets="typescript,react" data-type="module" src="index.tsx"></script>
+    <!-- ใช้ index.js และระบุ data-type="module" เพื่อให้ Babel จัดการการ import ไฟล์ .js อื่นๆ ที่มี JSX -->
+    <script type="text/babel" data-presets="react" data-type="module" src="./index.js"></script>
 </body>
 </html>

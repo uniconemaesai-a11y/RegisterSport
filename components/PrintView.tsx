@@ -202,7 +202,7 @@ const GroupedSection: React.FC<GroupedSectionProps> = ({ sportType, age, gender,
                       <span className="text-18pt mr-2">ลงชื่อ</span>
                       <div className="border-b border-dotted border-black w-[70mm] mb-1.5"></div>
                     </div>
-                    <p className="text-18pt leading-none mt-1">(นายประเทือง  เสนรังสี)</p>
+                    <p className="text-18pt leading-none mt-1">(นายประเทือง  เสนรังษี)</p>
                     <p className="text-18pt mt-1">ผู้อำนวยการสถานศึกษา โรงเรียนเทศบาล 1 วัดพรหมวิหาร</p>
                   </div>
                </div>
